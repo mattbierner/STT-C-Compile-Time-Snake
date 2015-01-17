@@ -1,0 +1,62 @@
+#pragma once
+
+#include "input.h"
+
+/**
+    Direction in two dimensional space.
+*/
+enum class Direction : unsigned
+{
+    Up,
+    Down,
+    Left,
+    Right
+};
+
+/**
+    Get the change in `x` for a given direction.
+*/
+template <Direction direction>
+struct direction_delta_x : std::integral_constant<int, 0> { };
+
+template <>
+struct direction_delta_x<Direction::Left> : std::integral_constant<int, -1> { };
+
+template <>
+struct direction_delta_x<Direction::Right> : std::integral_constant<int, 1> { };
+
+/**
+    Get the change in `y` for a given direction.
+*/
+template <Direction direction>
+struct direction_delta_y : std::integral_constant<int, 0> { };
+
+template <>
+struct direction_delta_y<Direction::Up> : std::integral_constant<int, -1> { };
+
+template <>
+struct direction_delta_y<Direction::Down> : std::integral_constant<int, 1> { };
+
+/**
+    For a given input, determine the new direction.
+    
+    Allows moving at 0, 90, and -90 angles but no 180s (which result in a noop).
+*/
+template<Direction direction, Input input>
+struct get_new_direction : std::integral_constant<Direction, direction> { };
+
+template<Direction direction>
+struct get_new_direction<direction, Input::None> : std::integral_constant<Direction, direction> { };
+
+template<Direction direction>
+struct get_new_direction<direction, Input::Up> : std::integral_constant<Direction, (direction == Direction::Down ? direction : Direction::Up)> { };
+
+template<Direction direction>
+struct get_new_direction<direction, Input::Down> : std::integral_constant<Direction, (direction == Direction::Up ? direction : Direction::Down)> { };
+
+template<Direction direction>
+struct get_new_direction<direction, Input::Left> : std::integral_constant<Direction, (direction == Direction::Right ? direction : Direction::Left)> { };
+
+template<Direction direction>
+struct get_new_direction<direction, Input::Right> : std::integral_constant<Direction, (direction == Direction::Left ? direction : Direction::Right)> { };
+
