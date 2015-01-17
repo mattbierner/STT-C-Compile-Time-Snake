@@ -78,15 +78,6 @@ struct decay<Cell<CellState::Snake, weight, direction>> {
 };
 
 /**
-*/
-template <Direction direction, typename pos>
-using get_next_position =
-    Position<
-        pos::x + direction_delta_x<direction>::value,
-        pos::y + direction_delta_y<direction>::value>;
-
-
-/**
     For a given grid and position, determine if we can continue from `position`
     in `direction` (i.e. without going beyond the bounds of the grid.)
 */

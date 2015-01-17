@@ -143,7 +143,11 @@ struct step {
     
         struct die
         {
-            using newWorld = mark_collision<nextPosition, typename state::world>;
+            using newWorld = mark_collision<
+                typename std::conditional<is_in_bounds<nextPosition, nextWorld>::value,
+                    nextPosition,
+                    typename state::position>::type,
+                typename state::world>;
         
             using type = State<
                 GameState::Dead,

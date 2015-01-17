@@ -1,7 +1,7 @@
 #pragma once
 
 /**
-    Player input command.
+    Single player input command.
 */
 enum class Input : unsigned
 {
@@ -11,3 +11,9 @@ enum class Input : unsigned
     Left,
     Right
 };
+
+/**
+    List of sequential input commands.
+*/
+template <Input... inputs>
+using PlayerInput = std::integer_sequence<Input, inputs...>;

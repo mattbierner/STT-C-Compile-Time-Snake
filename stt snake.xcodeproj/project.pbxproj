@@ -30,7 +30,7 @@
 		894C668F1A6A0FD300F4AF80 /* cell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = cell.h; sourceTree = "<group>"; };
 		894C66901A6A116400F4AF80 /* printer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = printer.h; sourceTree = "<group>"; };
 		894C66911A6A135A00F4AF80 /* grid.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = grid.h; sourceTree = "<group>"; };
-		894C66931A6A1B8F00F4AF80 /* state.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = state.h; sourceTree = "<group>"; };
+		894C66931A6A1B8F00F4AF80 /* snake.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = snake.h; sourceTree = "<group>"; };
 		894C66941A6A1F9A00F4AF80 /* input.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = input.h; sourceTree = "<group>"; };
 		894C66951A6A213500F4AF80 /* direction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = direction.h; sourceTree = "<group>"; };
 		894C66961A6A259C00F4AF80 /* random.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = random.h; sourceTree = "<group>"; };
@@ -69,7 +69,7 @@
 			isa = PBXGroup;
 			children = (
 				894C66861A6A0CCD00F4AF80 /* main.cpp */,
-				894C66931A6A1B8F00F4AF80 /* state.h */,
+				894C66931A6A1B8F00F4AF80 /* snake.h */,
 				894C66951A6A213500F4AF80 /* direction.h */,
 				894C66941A6A1F9A00F4AF80 /* input.h */,
 				894C66911A6A135A00F4AF80 /* grid.h */,
