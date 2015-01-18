@@ -228,7 +228,7 @@ struct Printer<State<PlayerState, position, direction, world, random>>
 {
     static void Print(std::ostream& output)
     {
-        output << "--" << (PlayerState == PlayerState:: Dead ? " dead " : "------") << "--" << "\n";
+        output << "------" << (PlayerState == PlayerState:: Dead ? " dead " : "------") << "------" << "\n";
         Printer<world>::Print(output);
     }
 };
