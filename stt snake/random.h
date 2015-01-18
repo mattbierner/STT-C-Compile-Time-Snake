@@ -1,3 +1,8 @@
+/**
+    Linear feedback shift register compile time random number generator.
+    
+    https://gist.github.com/mattbierner/d6d989bf26a7e54e7135
+*/
 #pragma once
 
 #include <utility>

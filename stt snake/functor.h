@@ -1,3 +1,6 @@
+/**
+    Basic specilizable interface for a type that can be fmapped.
+*/
 #pragma once
 
 template <typename x, template<typename> class f>

@@ -22,7 +22,7 @@ template <typename r>
 struct Grid {
     using rows = r;
     
-    static const size_t size = list_size_t<r>::value;
+    static const size_t size = rows::size;
 };
 
 /**

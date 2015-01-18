@@ -1,29 +1,36 @@
 #pragma once
 
+/**
+    Encodes a boolean as a type so we can perform call by need operations on it.
+*/
 template <bool value>
-struct pred : std::integral_constant<bool, value> {
-    template <typename p, typename a, typename b>
-    using pred_and = typename p::template apply<a, b>;
+struct boolean : std::integral_constant<bool, value> {
+    template <typename p, typename... args>
+    using logical_and = typename p::template apply<args...>;
 };
 
 template <>
-struct pred<false> : std::integral_constant<bool, false> {
-    template <typename p, typename a, typename b>
-    using pred_and = pred<false>;
+struct boolean<false> : std::integral_constant<bool, false> {
+    template <typename p, typename...>
+    using logical_and = boolean<false>;
 };
 
-
-template <bool value, typename s, typename a, typename b>
-using pred_and = typename pred<value>::template pred_and<s, a, b>;
-
+template <bool value, typename s, typename... args>
+using logical_and = typename boolean<value>::template logical_and<s, args...>;
 
 
+/**
+    Branch on `value` using call by need evaluation.
+*/
 template <bool value, typename consequent, typename alternate>
-struct lazy_conditional {
+struct branch {
     using type = typename consequent::type;
 };
 
 template <typename consequent, typename alternate>
-struct lazy_conditional<false, consequent, alternate> {
+struct branch<false, consequent, alternate> {
     using type = typename alternate::type;
 };
+
+template <bool value, typename consequent, typename alternate>
+using branch_t = typename branch<value, consequent, alternate>::type;

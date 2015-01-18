@@ -3,30 +3,16 @@
 */
 #pragma once
 
-#include <utility>
-
 #include "functor.h"
 #include "printer.h"
 
 /**
     Ordered list of types.
 */
-template <typename...>
-struct List { };
-
-/**
-    Get size of a list;
-*/
-template <typename list>
-struct list_size;
-
-template <typename... xs>
-struct list_size<List<xs...>> :
-    std::integral_constant<size_t, sizeof...(xs)> { };
-
-template <typename list>
-using list_size_t = typename list_size<list>::type;
-
+template <typename... elements>
+struct List {
+    static const size_t size = sizeof...(elements);
+};
 
 /**
     Get the head of an list
@@ -76,24 +62,27 @@ using cons_t = typename cons<x, list>::type;
 template <size_t N, typename list>
 struct get;
 
-template <size_t N, typename x, typename... xs>
-struct get<N, List<x, xs...>> {
-    using type = typename get<N - 1, List<xs...>>::type;
-};
+template <size_t N, typename list>
+using get_t = typename get<N, list>::type;
 
 template <typename x, typename... xs>
 struct get<0, List<x, xs...>> {
     using type = x;
 };
 
-template <size_t N, typename list>
-using get_t = typename get<N, list>::type;
+template <size_t N, typename x, typename... xs>
+struct get<N, List<x, xs...>> {
+    using type = get_t<N - 1, List<xs...>>;
+};
 
 /**
-   Put a value.
+   Set the value at index `N` in the list.
 */
 template <size_t N, typename newValue, typename list>
 struct put;
+
+template <size_t N, typename newValue, typename list>
+using put_t = typename put<N, newValue, list>::type;
 
 template <typename newValue, typename x, typename... xs>
 struct put<0, newValue, List<x, xs...>> {
@@ -102,12 +91,8 @@ struct put<0, newValue, List<x, xs...>> {
 
 template <size_t N, typename newValue, typename x, typename... xs>
 struct put<N, newValue, List<x, xs...>> {
-    using type = cons_t<x, typename put<N - 1, newValue, List<xs...>>::type>;
+    using type = cons_t<x, put_t<N - 1, newValue, List<xs...>>>;
 };
-
-template <size_t N, typename newValue, typename list>
-using put_t = typename put<N, newValue, list>::type;
-
 
 /**
     Build a list of `element` repeated `N` times.
@@ -125,8 +110,8 @@ struct gen<0, element> {
 template <size_t N, typename element>
 using gen_t = typename gen<N, element>::type;
 
-/**
-    Maps a functor `f` over a list.
+/*------------------------------------------------------------------------------
+    Functor
 */
 template <template<typename> class f>
 struct Fmap<List<>, f> {
@@ -140,9 +125,8 @@ struct Fmap<List<x, xs...>, f> {
         fmap_t<List<xs...>, f>>;
 };
 
-
-/**
-    Prints out the list.
+/*------------------------------------------------------------------------------
+    Printer
 */
 template <>
 struct Printer<List<>>

@@ -1,8 +1,8 @@
+/**
+    Basic specilizable interface for a type that can be printed for display.
+*/
 #pragma once
 
-/**
-    Prints a type to output.
-*/
 template <typename>
 struct Printer;
 

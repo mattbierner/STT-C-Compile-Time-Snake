@@ -9,11 +9,7 @@
 #include "world.h"
 
 /**
-    Default Size of the gameworld.
-*/
-constexpr const size_t worldSize = 10;
-
-/**
+    Seed for the random number generator.
 */
 template <unsigned max>
 using InitialRandom = prandom::PseudoRandomGenerator<max,
@@ -22,24 +18,26 @@ using InitialRandom = prandom::PseudoRandomGenerator<max,
         prandom::indicies<0, 10, 12, 13, 15>>>;
 
 /**
+    General state of the player
 */
-enum class GameState : unsigned
+enum class PlayerState : unsigned
 {
     Alive,
     Dead
 };
 
 /**
+    State of a snake game.
 */
 template <
-    GameState currentGameState,
+    PlayerState currentPlayerState,
     typename currentPosition,
     Direction currentDirection,
     typename currentWorld,
     typename currentRandom>
 struct State
 {
-    static const GameState gameState = currentGameState;
+    static const PlayerState PlayerState = currentPlayerState;
 
     using position = currentPosition;
     
@@ -50,14 +48,14 @@ struct State
     using random = currentRandom;
     
     template <typename newWorld>
-    using set_world = State<gameState, position, direction, newWorld, random>;
+    using set_world = State<PlayerState, position, direction, newWorld, random>;
     
     template <typename newRandom>
-    using set_random = State<gameState, position, direction, world, newRandom>;
+    using set_random = State<PlayerState, position, direction, world, newRandom>;
 };
 
-
 /**
+    Generate a new, randomly placed food entry.
 */
 template <typename state, typename = void>
 struct put_food {
@@ -91,30 +89,22 @@ using put_food_t = typename put_food<state>::type;
 
 
 /**
-    Create the initial game world.
-*/
-template <
-    typename position,
-    Direction direction>
-using InitialWorld =
-    put_grid<
-        position,
-        MakeSnakeCell<1, direction>,
-        gen_grid<worldSize, EmptyCell>>;
-
-/**
+    The initial state of a snake game.
 */
 using InitialState =
-    put_food_t<State<
-        GameState::Alive,
-        Position<worldSize / 2, worldSize / 2>,
-        Direction::Right,
-        InitialWorld<
+    put_food_t<
+        State<
+            PlayerState::Alive,
             Position<worldSize / 2, worldSize / 2>,
-            Direction::Right>,
-        InitialRandom<worldSize>>>;
+            Direction::Right,
+            InitialWorld<
+                Position<worldSize / 2, worldSize / 2>,
+                Direction::Right>,
+            InitialRandom<worldSize>>>;
 
-
+/**
+    Progress the snake game by one step by consuming one input.
+*/
 template <Input input, typename state>
 struct step {
     static const Direction direction = get_new_direction<state::direction, input>::value;
@@ -123,26 +113,43 @@ struct step {
     
     static const unsigned currentWeight = get_weigth<typename state::position, typename state::world>::value;
     
+    /**
+        Case where the snake consumes some food.
+        
+        This is garunteed not the be a collision.
+        
+        Skip the decay step and add one to the snake's head.
+    */
     struct consume
     {
         using newWorld = grow_snake<currentWeight + 1, direction, nextPosition, typename state::world>;
         
         using type = put_food_t<State<
-            GameState::Alive,
+            PlayerState::Alive,
             nextPosition,
             direction,
             newWorld,
             typename state::random>>;
     };
     
+    /**
+        Regular gameplay, may be other a collision or
+    */
     struct regular
     {
+        /**
+            Decay the entire grid before performing the next move.
+        */
         using nextWorld = fmap_t<typename state::world, decay>;
-    
-        static const bool died = !is_empty<nextPosition, nextWorld>::value;
-    
+        
+        /**
+            The snake collided with something.
+        */
         struct die
         {
+            /**
+                Mark the collision on the map.
+            */
             using newWorld = mark_collision<
                 typename std::conditional<is_in_bounds<nextPosition, nextWorld>::value,
                     nextPosition,
@@ -150,15 +157,21 @@ struct step {
                 typename state::world>;
         
             using type = State<
-                GameState::Dead,
+                PlayerState::Dead,
                 nextPosition,
                 direction,
                 newWorld,
                 typename state::random>;
         };
         
+        /**
+            No collision, continue on.
+        */
         struct live
         {
+            /**
+                Regrow the snake by one to advance it.
+            */
             using newWorld = grow_snake<
                 currentWeight,
                 direction,
@@ -166,66 +179,70 @@ struct step {
                 nextWorld>;
         
             using type = State<
-                GameState::Alive,
+                PlayerState::Alive,
                 nextPosition,
                 direction,
                 newWorld,
                 typename state::random>;
         };
     
-        using type = typename lazy_conditional<
-            died,
-            die,
-            live>::type;
+        using type = branch_t<is_empty<nextPosition, nextWorld>::value,
+            live,
+            die>;
     };
     
-    using type = typename lazy_conditional<
+    using type = branch_t<
         is_food<nextPosition, typename state::world>::value,
         consume,
-        regular>::type;
-   // using newWorld = fmap_t<state, decay>;
+        regular>;
 
 };
 
-template <Input input, typename state>
-using step_t = typename step<input, state>::type;
-
+/**
+    For the case where we are dead, noop.
+*/
 template <
     Input input,
     typename position,
     Direction direction,
     typename world,
     typename random>
-struct step<input, State<GameState::Dead, position, direction, world, random>> {
-    using type = State<GameState::Dead, position, direction, world, random>;
+struct step<input, State<PlayerState::Dead, position, direction, world, random>> {
+    using type = State<PlayerState::Dead, position, direction, world, random>;
 };
 
-/**
+template <Input input, typename state>
+using step_t = typename step<input, state>::type;
+
+
+/*------------------------------------------------------------------------------
+    Printer
 */
 template <
-    GameState gameState,
+    PlayerState PlayerState,
     typename position,
     Direction direction,
     typename world,
     typename random>
-struct Printer<State<gameState, position, direction, world, random>>
+struct Printer<State<PlayerState, position, direction, world, random>>
 {
     static void Print(std::ostream& output)
     {
-        output << "----" << (gameState == GameState:: Dead ? " dead " : "------") << "----" << "\n";
+        output << "--" << (PlayerState == PlayerState:: Dead ? " dead " : "------") << "--" << "\n";
         Printer<world>::Print(output);
     }
 };
 
-/**
+/*------------------------------------------------------------------------------
+    Functor
 */
 template <
-    GameState gameState,
+    PlayerState PlayerState,
     typename position,
     Direction direction,
     typename world,
     typename random,
     template<typename> class f>
-struct Fmap<State<gameState, position, direction, world, random>, f> {
-    using type = State<gameState, position, direction, fmap_t<world, f>, random>;
+struct Fmap<State<PlayerState, position, direction, world, random>, f> {
+    using type = State<PlayerState, position, direction, fmap_t<world, f>, random>;
 };

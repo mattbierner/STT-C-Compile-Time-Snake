@@ -20,7 +20,7 @@ enum class CellState : unsigned
 
 /**
     State of a single cell on the game board. Stores both a state and a
-    weight for `Snake` tiles.
+    weight and direction for `Snake` tiles.
 */
 template <CellState s, unsigned w, Direction d>
 struct Cell {
@@ -45,13 +45,18 @@ using FoodCell = Cell<CellState::Food, 0, Direction::Left>;
 using CollisionCell = Cell<CellState::Collision, 0, Direction::Left>;
 
 /**
-    Cell with a snake section. `weight` is the number of turns
-    it will take for the snake section to decay.
+    Cell with a snake section.
+    
+    `weight` is the number of turns it will take for the snake section to decay.
+    
+    `direction` is used for rendering.
 */
 template <unsigned weight, Direction direction>
 using MakeSnakeCell = Cell<CellState::Snake, weight, direction>;
 
-
+/*------------------------------------------------------------------------------
+    Printer
+*/
 template <unsigned weight, Direction direction>
 struct Printer<Cell<CellState::Empty, weight, direction>>
 {
