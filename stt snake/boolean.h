@@ -1,22 +1,18 @@
 #pragma once
 
+template <template<typename...> class T, typename... args>  
+struct Thunk {  
+    using type = T<args...>;
+};
+
 /**
     Encodes a boolean as a type so we can perform call by need operations on it.
 */
-template <bool value>
-struct boolean : std::integral_constant<bool, value> {
-    template <typename p, typename... args>
-    using logical_and = typename p::template apply<args...>;
-};
+template <bool, typename right>  
+struct logical_and : right::type { };
 
-template <>
-struct boolean<false> : std::integral_constant<bool, false> {
-    template <typename p, typename...>
-    using logical_and = boolean<false>;
-};
-
-template <bool value, typename s, typename... args>
-using logical_and = typename boolean<value>::template logical_and<s, args...>;
+template <typename right>  
+struct logical_and<false, right> : std::false_type { };
 
 /**
     Branch on `value` using call by need evaluation.

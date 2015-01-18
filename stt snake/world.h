@@ -32,13 +32,10 @@ using is_in_bounds =
 /**
     Function that checks if cell is of a given type.
 */
-template <CellState type>
-struct is_type {
-    template <typename pos, typename world>
-    struct apply :
-        std::integral_constant<bool,
-            get_grid<pos, world>::state == type> { };
-};
+template <typename cell, typename pos, typename world>
+struct is_type :
+    std::integral_constant<bool,
+        get_grid<pos, world>::state == cell::state> { };
 
 /**
     Is the cell at `pos` in `world` empty?
@@ -47,9 +44,7 @@ template <typename pos, typename world>
 struct is_empty :
     logical_and<
         is_in_bounds<pos, world>::value,
-        is_type<CellState::Empty>,
-        pos,
-        world> { };
+        Thunk<is_type, EmptyCell, pos, world>> { };
 
 /**
     Is the cell at `pos` in `world` a food cell?
@@ -58,9 +53,7 @@ template <typename pos, typename world>
 struct is_food :
     logical_and<
         is_in_bounds<pos, world>::value,
-        is_type<CellState::Food>,
-        pos,
-        world> { };
+        Thunk<is_type, FoodCell, pos, world>> { };
 
 /**
     Can the cell at `pos` in `world` be moved to?
