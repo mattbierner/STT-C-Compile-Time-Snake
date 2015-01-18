@@ -18,7 +18,6 @@ struct boolean<false> : std::integral_constant<bool, false> {
 template <bool value, typename s, typename... args>
 using logical_and = typename boolean<value>::template logical_and<s, args...>;
 
-
 /**
     Branch on `value` using call by need evaluation.
 */

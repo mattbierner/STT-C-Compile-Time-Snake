@@ -50,8 +50,8 @@ using put_grid = Grid<
         typename grid::rows>>;
 
 
-/**
-    Prints out a grid.
+/*------------------------------------------------------------------------------
+    Printer
 */
 template <>
 struct Printer<Grid<List<>>>
@@ -70,8 +70,8 @@ struct Printer<Grid<List<x, xs...>>>
     }
 };
 
-/**
-    Maps a functor `f` over a grid.
+/*------------------------------------------------------------------------------
+    Functor
 */
 template <typename rows, template<typename> class f>
 struct Fmap<Grid<rows>, f> {

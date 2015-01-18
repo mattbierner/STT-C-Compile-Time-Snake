@@ -1,5 +1,5 @@
 /**
-    Basic 1D list type.
+    Basic 1D list.
 */
 #pragma once
 
@@ -43,7 +43,7 @@ template <typename list>
 using cdr_t = typename cdr<list>::type;
 
 /**
-    Prepend a value onto an `integer_sequence`.
+    Prepend a value onto a list
 */
 template <typename x, typename list>
 struct cons;
@@ -57,7 +57,7 @@ template <typename x, typename list>
 using cons_t = typename cons<x, list>::type;
 
 /**
-    Lookup a value in an `integer_sequence`.
+    Lookup a value in a list.
 */
 template <size_t N, typename list>
 struct get;

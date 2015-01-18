@@ -155,7 +155,6 @@ struct Lfsr {
 */
 template <unsigned max, typename lfsr>
 struct PseudoRandomGenerator {
-    
     using next = PseudoRandomGenerator<max, typename lfsr::next>;
 
     static const unsigned value = static_cast<unsigned>((lfsr::template value<unsigned>::value - 1) % max);
