@@ -1,6 +1,8 @@
 # Compile Time C++ Snake Game
 
-Implementation of Snake / Nibbler using C++14 template metaprogramming. All the logic is implemented at compile time. When the program is run, it prints out the result of gameplay.
+Implementation of Snake / Nibbler using C++14 template metaprogramming. All the logic is implemented at compile time. When the program is run, it prints out the result of gameplay. [Here's a post covering the implementation in more detail][post].
+
+
 
 Includes a simple example game:
 
@@ -303,3 +305,5 @@ int main(int argc, const char* argv[])
 ╺╺╺╺╺╺╺╺╺╺
 Program ended with exit code: 0
 ```
+
+[post]: https://blog.mattbierner.com/stupid-template-tricks-snake/
