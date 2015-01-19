@@ -54,6 +54,22 @@ using CollisionCell = Cell<CellState::Collision, 0, Direction::Left>;
 template <unsigned weight, Direction direction>
 using MakeSnakeCell = Cell<CellState::Snake, weight, direction>;
 
+/**
+    Decays all the snake cells by one.
+*/
+template <typename cell>
+struct decay {
+    using type = cell;
+};
+
+template <unsigned weight, Direction direction>
+struct decay<Cell<CellState::Snake, weight, direction>> {
+    using type =
+        typename std::conditional<weight <= 1,
+            EmptyCell,
+            Cell<CellState::Snake, weight - 1, direction>>::type;
+};
+
 /*------------------------------------------------------------------------------
     Printer
 */

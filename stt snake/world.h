@@ -83,21 +83,6 @@ using grow_snake = put_grid<pos, MakeSnakeCell<weight, direction>, world>;
 template <typename pos, typename world>
 using mark_collision = put_grid<pos, CollisionCell, world>;
 
-/**
-    Decays all the snake cells by one.
-*/
-template <typename cell>
-struct decay {
-    using type = cell;
-};
-
-template <unsigned weight, Direction direction>
-struct decay<Cell<CellState::Snake, weight, direction>> {
-    using type =
-        typename std::conditional<weight <= 1,
-            EmptyCell,
-            Cell<CellState::Snake, weight - 1, direction>>::type;
-};
 
 /**
     For a given grid and position, determine if we can continue from `position`
