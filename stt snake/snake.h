@@ -111,7 +111,7 @@ struct step {
 
     using nextPosition = get_next_position<direction, typename state::position>;
     
-    static const unsigned currentWeight = get_weigth<typename state::position, typename state::world>::value;
+    static const unsigned currentWeight = get_weight<typename state::position, typename state::world>::value;
     
     /**
         Case where the snake consumes some food.
@@ -228,7 +228,7 @@ struct Printer<State<PlayerState, position, direction, world, random>>
 {
     static void Print(std::ostream& output)
     {
-        output << "------" << (PlayerState == PlayerState:: Dead ? " dead " : "------") << "------" << "\n";
+        output << "--" << (PlayerState == PlayerState:: Dead ? " You Are Dead " : "--------------") << "--" << "\n";
         Printer<world>::Print(output);
     }
 };

@@ -67,7 +67,7 @@ struct is_free :
     Get the weight of a snake cell
 */
 template <typename pos, typename world>
-struct get_weigth :
+struct get_weight :
     std::integral_constant<size_t,
         get_grid<pos, world>::weight> { };
 
