@@ -61,7 +61,6 @@ template <typename state, typename = void>
 struct put_food {
     using type = typename put_food<
         typename state::template set_random<typename state::random::next::next>>::type;
-    
 };
 
 template <typename state>
@@ -77,11 +76,14 @@ struct put_food<state,
     
     using targetPosition = Position<targetX, targetY>;
     
-    using type = typename state::template set_world<
-        put_grid<
-            targetPosition,
-            FoodCell,
-            typename state::world>>;
+    using type = typename state
+        ::template set_world<
+            put_grid<
+                targetPosition,
+                FoodCell,
+                typename state::world>>
+        ::template set_random<
+            typename state::random::next::next>;
 };
 
 template <typename state>
@@ -116,7 +118,7 @@ struct step {
     /**
         Case where the snake consumes some food.
         
-        This is garunteed not the be a collision.
+        This is garunteed not to be a collision.
         
         Skip the decay step and add one to the snake's head.
     */
@@ -140,7 +142,7 @@ struct step {
         /**
             Decay the entire grid before performing the next move.
         */
-        using nextWorld = fmap_t<typename state::world, decay>;
+        using decayedWorld = fmap_t<typename state::world, decay>;
         
         /**
             The snake collided with something.
@@ -151,7 +153,7 @@ struct step {
                 Mark the collision on the map.
             */
             using newWorld = mark_collision<
-                typename std::conditional<is_in_bounds<nextPosition, nextWorld>::value,
+                typename std::conditional<is_in_bounds<nextPosition, decayedWorld>::value,
                     nextPosition,
                     typename state::position>::type,
                 typename state::world>;
@@ -176,7 +178,7 @@ struct step {
                 currentWeight,
                 direction,
                 nextPosition,
-                nextWorld>;
+                decayedWorld>;
         
             using type = State<
                 PlayerState::Alive,
@@ -186,7 +188,7 @@ struct step {
                 typename state::random>;
         };
     
-        using type = branch_t<is_empty<nextPosition, nextWorld>::value,
+        using type = branch_t<is_empty<nextPosition, decayedWorld>::value,
             live,
             die>;
     };
@@ -195,7 +197,6 @@ struct step {
         is_food<nextPosition, typename state::world>::value,
         consume,
         regular>;
-
 };
 
 /**
@@ -231,18 +232,4 @@ struct Printer<State<PlayerState, position, direction, world, random>>
         output << "--" << (PlayerState == PlayerState:: Dead ? " You Are Dead " : "--------------") << "--" << "\n";
         Printer<world>::Print(output);
     }
-};
-
-/*------------------------------------------------------------------------------
-    Functor
-*/
-template <
-    PlayerState PlayerState,
-    typename position,
-    Direction direction,
-    typename world,
-    typename random,
-    template<typename> class f>
-struct Fmap<State<PlayerState, position, direction, world, random>, f> {
-    using type = State<PlayerState, position, direction, fmap_t<world, f>, random>;
 };

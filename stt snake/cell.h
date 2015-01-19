@@ -55,7 +55,7 @@ template <unsigned weight, Direction direction>
 using MakeSnakeCell = Cell<CellState::Snake, weight, direction>;
 
 /**
-    Decays all the snake cells by one.
+    Decays snake cells by one.
 */
 template <typename cell>
 struct decay {

@@ -47,9 +47,6 @@ template <Direction direction, Input input>
 struct get_new_direction : std::integral_constant<Direction, direction> { };
 
 template <Direction direction>
-struct get_new_direction<direction, Input::None> : std::integral_constant<Direction, direction> { };
-
-template <Direction direction>
 struct get_new_direction<direction, Input::Up> : std::integral_constant<Direction, (direction == Direction::Down ? direction : Direction::Up)> { };
 
 template <Direction direction>
