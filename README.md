@@ -5,7 +5,7 @@ Implementation of Snake / Nibbler using C++14 template metaprogramming. All the 
 Two versions are included:
 * An "interactive" game that saves state between compiler runs. Each compile
   advances one turn. Found on the `interactive` branch
-* A static version that playes the entire game in a single compile. This is the version on the main branch.
+* A static version that plays the entire game in a single compile. This is the version on the main branch.
 
 ## Interactive
 Plays one step of the game every time the game is recompiled. Uses compiler flags to control input:
@@ -14,7 +14,7 @@ Plays one step of the game every time the game is recompiled. Uses compiler flag
 $ clang++ -std=c++1y main.cpp -D COMMAND -o snake ; ./snake
 ```
 
-Valid commands are UP, DOWN, LEFT, and RIGHT. If no command is entered, the snake will go streight.
+Valid commands are UP, DOWN, LEFT, and RIGHT. If no command is entered, the snake will go straight.
 You can reset to the original state by running `./reset.sh`. 
 
 
