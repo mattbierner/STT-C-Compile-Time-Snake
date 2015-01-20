@@ -36,6 +36,9 @@
 		894C66961A6A259C00F4AF80 /* random.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = random.h; sourceTree = "<group>"; };
 		894C66971A6A297700F4AF80 /* world.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = world.h; sourceTree = "<group>"; };
 		894C66981A6AF97D00F4AF80 /* boolean.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = boolean.h; sourceTree = "<group>"; };
+		89CECF591A6DFDA200138F41 /* serialize.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = serialize.h; sourceTree = "<group>"; };
+		89CECF5B1A6E0C2200138F41 /* current_game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = current_game.h; sourceTree = "<group>"; };
+		89CECF5C1A6E0F5F00138F41 /* get_input.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = get_input.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +83,9 @@
 				894C66961A6A259C00F4AF80 /* random.h */,
 				894C66971A6A297700F4AF80 /* world.h */,
 				894C66981A6AF97D00F4AF80 /* boolean.h */,
+				89CECF591A6DFDA200138F41 /* serialize.h */,
+				89CECF5B1A6E0C2200138F41 /* current_game.h */,
+				89CECF5C1A6E0F5F00138F41 /* get_input.h */,
 			);
 			path = "stt snake";
 			sourceTree = "<group>";
@@ -262,6 +268,7 @@
 				894C668C1A6A0CCD00F4AF80 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

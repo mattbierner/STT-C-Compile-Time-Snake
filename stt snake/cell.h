@@ -105,3 +105,33 @@ struct Printer<Cell<CellState::Collision, weight, direction>>
 {
     static void Print(std::ostream& output) { output << "\u2588"; }
 };
+
+/*------------------------------------------------------------------------------
+    Serialize
+*/
+template <CellState state>
+std::ostream& SerializeCellState(std::ostream& output)
+{
+    output << "CellState::";
+    switch (state)
+    {
+    case CellState::Empty: output << "Empty"; break;
+    case CellState::Snake: output << "Snake"; break;
+    case CellState::Food: output << "Food"; break;
+    case CellState::Collision: output << "Collision"; break;
+    }
+    return output;
+}
+
+template <CellState state, unsigned weight, Direction direction>
+struct Serialize<Cell<state, weight, direction>>
+{
+    static std::ostream& Write(std::ostream& output)
+    {
+        output << "Cell<";
+        SerializeCellState<state>(output) << ",";
+        output << weight << ",";
+        SerializeValue<Direction, direction>::Write(output);
+        return output << ">";
+    }
+};

@@ -5,6 +5,7 @@
 
 #include "functor.h"
 #include "printer.h"
+#include "serialize.h"
 
 /**
     Ordered list of types.
@@ -141,5 +142,19 @@ struct Printer<List<x, xs...>>
     {
         Printer<x>::Print(output);
         Printer<List<xs...>>::Print(output);
+    }
+};
+
+/*------------------------------------------------------------------------------
+    Serialize
+*/
+template <typename... elements>
+struct Serialize<List<elements...>>
+{
+    static std::ostream& Write(std::ostream& output)
+    {
+        output << "List<";
+        Join<',', elements...>::Write(output);
+        return output << ">";
     }
 };

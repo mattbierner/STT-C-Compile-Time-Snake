@@ -2,6 +2,7 @@
 
 #include "grid.h"
 #include "input.h"
+#include "serialize.h"
 
 /**
     Direction in two dimensional space.
@@ -66,4 +67,26 @@ using get_next_position =
     Position<
         pos::x + direction_delta_x<direction>::value,
         pos::y + direction_delta_y<direction>::value>;
+
+
+/*------------------------------------------------------------------------------
+    Serialize
+*/
+template <Direction d>
+struct SerializeValue<Direction, d>
+{
+    static std::ostream& Write(std::ostream& output)
+    {
+        output << "Direction::";
+        switch (d)
+        {
+        case Direction::Up: output << "Up"; break;
+        case Direction::Down: output << "Down"; break;
+        case Direction::Left: output << "Left"; break;
+        case Direction::Right: output << "Right"; break;
+        }
+        return output;
+    }
+};
+
     

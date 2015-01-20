@@ -6,6 +6,7 @@
 #include "grid.h"
 #include "printer.h"
 #include "random.h"
+#include "serialize.h"
 #include "world.h"
 
 /**
@@ -220,16 +221,54 @@ using step_t = typename step<input, state>::type;
     Printer
 */
 template <
-    PlayerState PlayerState,
+    PlayerState playerState,
     typename position,
     Direction direction,
     typename world,
     typename random>
-struct Printer<State<PlayerState, position, direction, world, random>>
+struct Printer<State<playerState, position, direction, world, random>>
 {
     static void Print(std::ostream& output)
     {
-        output << "--" << (PlayerState == PlayerState:: Dead ? " You Are Dead " : "--------------") << "--" << "\n";
+        output << "--" << (playerState == PlayerState::Dead ? " You Are Dead " : "--------------") << "--" << "\n";
         Printer<world>::Print(output);
+    }
+};
+
+/*------------------------------------------------------------------------------
+    Serialize
+*/
+template <PlayerState state>
+struct SerializeValue<PlayerState, state>
+{
+    static std::ostream& Write(std::ostream& output)
+    {
+        output << "PlayerState::";
+        switch (state)
+        {
+        case PlayerState::Alive: output << "Alive"; break;
+        case PlayerState::Dead: output << "Dead"; break;
+        }
+        return output;
+    }
+};
+
+template <
+    PlayerState playerState,
+    typename position,
+    Direction direction,
+    typename world,
+    typename random>
+struct Serialize<State<playerState, position, direction, world, random>>
+{
+    static std::ostream& Write(std::ostream& output)
+    {
+        output << "State<";
+        SerializeValue<PlayerState, playerState>::Write(output) << ",";
+        Serialize<position>::Write(output) << ",";
+        SerializeValue<Direction, direction>::Write(output) << ",";
+        Serialize<world>::Write(output) << ",";
+        Serialize<random>::Write(output) << ">";
+        return output;
     }
 };

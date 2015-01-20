@@ -2,9 +2,135 @@
 
 Implementation of Snake / Nibbler using C++14 template metaprogramming. All the logic is implemented at compile time. When the program is run, it prints out the result of gameplay. [Here's a post covering the implementation in more detail][post].
 
+Two versions are included:
+* An "interactive" game that saves state between compiler runs. Each compile
+  advances one turn. Found on the `interactive` branch
+* A static version that playes the entire game in a single compile. This is the version on the main branch.
+
+## Interactive
+Plays one step of the game every time the game is recompiled. Uses compiler flags to control input:
+
+```
+$ clang++ -std=c++1y main.cpp -D COMMAND -o snake ; ./snake
+```
+
+Valid commands are UP, DOWN, LEFT, and RIGHT. If no command is entered, the snake will go streight.
+You can reset to the original state by running `./reset.sh`. 
 
 
-Includes a simple example game:
+```
+bash-3.2$ ./reset.sh 
+bash-3.2$ clang++ -std=c++1y main.cpp  -o snake ; ./snake
+------------------
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺▶*╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+bash-3.2$ clang++ -std=c++1y main.cpp -D RIGHT -o snake ; ./snake
+------------------
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺*╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺▶▶╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+bash-3.2$ clang++ -std=c++1y main.cpp -o snake ; ./snake
+------------------
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺*╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺▶▶╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+bash-3.2$ clang++ -std=c++1y main.cpp -D UP -o snake ; ./snake
+------------------
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺*╺╺
+╺╺╺╺╺╺╺▲╺╺
+╺╺╺╺╺╺╺▶╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+bash-3.2$ clang++ -std=c++1y main.cpp -o snake ; ./snake
+------------------
+╺*╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺▲╺╺
+╺╺╺╺╺╺╺▲╺╺
+╺╺╺╺╺╺╺▶╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+bash-3.2$ clang++ -std=c++1y main.cpp -o snake ; ./snake
+------------------
+╺*╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺▲╺╺
+╺╺╺╺╺╺╺▲╺╺
+╺╺╺╺╺╺╺▲╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+bash-3.2$ clang++ -std=c++1y main.cpp -D RIGHT -o snake ; ./snake
+------------------
+╺*╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺▲▶╺
+╺╺╺╺╺╺╺▲╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+bash-3.2$ clang++ -std=c++1y main.cpp -o snake ; ./snake
+------------------
+╺*╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺▲▶▶
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+bash-3.2$ clang++ -std=c++1y main.cpp -o snake ; ./snake
+-- You Are Dead --
+╺*╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺▲▶█
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+╺╺╺╺╺╺╺╺╺╺
+```
+## Static 
+Plays the entire game in a single compiler run. This code is on the main branch.
 
 ```
 int main(int argc, const char* argv[])

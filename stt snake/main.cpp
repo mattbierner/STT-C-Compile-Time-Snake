@@ -1,4 +1,6 @@
 #include <iostream>
+#include <sstream>
+#include <fstream>
 
 #include "cell.h"
 #include "direction.h"
@@ -7,46 +9,40 @@
 #include "snake.h"
 
 /**
-    Play a game of snake for a given set of inputs,
-    building a list of states.
+    Save the output state
 */
-template <typename inputs, typename state>
-struct play;
-
-template <typename inputs, typename state>
-using play_t = typename play<inputs, state>::type;
-
 template <typename state>
-struct play<PlayerInput<>, state> {
-    using type = List<state>;
-};
-
-template <Input input, Input... inputs, typename state>
-struct play<PlayerInput<input, inputs...>, state> {
-    using type = cons_t<
-        state,
-        play_t<
-            PlayerInput<inputs...>,
-            step_t<input, state>>>;
-};
+void serialize_game()
+{
+    std::ofstream s;
+    s.open("current_game.h");
+    s << "#import \"snake.h\"\n";
+    
+    s << "using state = ";
+    Serialize<state>::Write(s);
+    s << ";";
+    s.close();
+}
 
 /**
     Print out the result of the game.
 */
 int main(int argc, const char* argv[])
 {
-    using inputs = PlayerInput<
-        Input::Right, Input::Up, Input::None, Input::Right, Input::Up,
-        Input::None, Input::None, Input::Left, Input::None, Input::None,
-        Input::None, Input::None, Input::None, Input::Down, Input::None,
-        Input::None, Input::None, Input::None, Input::None, Input::None,
-        Input::None, Input::Right, Input::Up, Input::Left>;
+#include "current_game.h"
 
-    using state = InitialState;
+#include "get_input.h"
     
-    using game = play_t<inputs, state>;
+    // on first turn, don't consume any input but print the game world.
+#if defined(FIRSTTURN)
+    using game = state;
+#else
+    using game = step_t<input, state>;
+#endif
 
     Printer<game>::Print(std::cout);
+    
+    serialize_game<game>();
     
     return 0;
 }

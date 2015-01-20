@@ -84,3 +84,30 @@ struct Fmap<Grid<rows>, f> {
     using type = Grid<
         fmap_t<rows, fmap_inner>>;
 };
+
+/*------------------------------------------------------------------------------
+    Serialize
+*/
+template <typename rows>
+struct Serialize<Grid<rows>>
+{
+    static std::ostream& Write(std::ostream& output)
+    {
+        output << "Grid<";
+        Serialize<rows>::Write(output);
+        return output << ">";
+    }
+};
+
+/*------------------------------------------------------------------------------
+    Serialize
+*/
+template <size_t x, size_t y>
+struct Serialize<Position<x, y>>
+{
+    static std::ostream& Write(std::ostream& output)
+    {
+        output << "Position<" << x << "," << y << ">";
+        return output;
+    }
+};
