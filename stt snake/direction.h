@@ -73,7 +73,7 @@ using get_next_position =
     Serialize
 */
 template <Direction d>
-struct SerializeValue<Direction, d>
+struct Serialize<SerializableValue<Direction, d>>
 {
     static std::ostream& Write(std::ostream& output)
     {

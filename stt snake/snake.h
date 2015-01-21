@@ -239,7 +239,7 @@ struct Printer<State<playerState, position, direction, world, random>>
     Serialize
 */
 template <PlayerState state>
-struct SerializeValue<PlayerState, state>
+struct Serialize<SerializableValue<PlayerState, state>>
 {
     static std::ostream& Write(std::ostream& output)
     {
@@ -264,9 +264,9 @@ struct Serialize<State<playerState, position, direction, world, random>>
     static std::ostream& Write(std::ostream& output)
     {
         output << "State<";
-        SerializeValue<PlayerState, playerState>::Write(output) << ",";
+        Serialize<SerializableValue<PlayerState, playerState>>::Write(output) << ",";
         Serialize<position>::Write(output) << ",";
-        SerializeValue<Direction, direction>::Write(output) << ",";
+        Serialize<SerializableValue<Direction, direction>>::Write(output) << ",";
         Serialize<world>::Write(output) << ",";
         Serialize<random>::Write(output) << ">";
         return output;

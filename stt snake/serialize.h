@@ -61,68 +61,38 @@ struct Serialize<size_t> { static std::ostream& Write(std::ostream& output) { re
 /*------------------------------------------------------------------------------
     Value Type Serialization
 */
-
 /**
-    Interface for a value that can be serialized.
+    Wrapper around a type that can be serialized.
 */
 template <typename T, T x>
-struct SerializeValue
+struct SerializableValue { };
+
+template <typename T, T x>
+struct Serialize<SerializableValue<T, x>>
 {
-     static std::ostream& Write(std::ostream& output) { return output << x; };
+    static std::ostream& Write(std::ostream& output) { return output << x; }
 };
 
 template <bool x>
-struct SerializeValue<bool, x> { static std::ostream& Write(std::ostream& output) { return output << (x ? "true" : "false"); } };
-
-/**
-    Serializes a list of values, seperating neighboring elements using `joiner`.
-*/
-template <char joiner, typename T, T... list>
-struct JoinValue;
-
-template <char joiner, typename T, T first, T second, T... rest>
-struct JoinValue<joiner, T, first, second, rest...>
+struct Serialize<SerializableValue<bool, x>>
 {
-    static std::ostream& Write(std::ostream& output)
-    {
-        SerializeValue<T, first>::Write(output);
-        output << joiner;
-        return JoinValue<joiner, T, second, rest...>::Write(output);
-    }
-};
-
-template <char joiner, typename T, T first>
-struct JoinValue<joiner, T, first>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        return SerializeValue<T, first>::Write(output);
-    }
-};
-
-template <char joiner, typename T>
-struct JoinValue<joiner, T>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        return output;
-    }
+    static std::ostream& Write(std::ostream& output) { return output << (x ? "true" : "false"); }
 };
 
 /**
     Serializes an integer_sequence.
 */
-template <typename T, T x, T... xs>
-struct Serialize<std::integer_sequence<T, x, xs...>>
+template <typename T, T... elements>
+struct Serialize<std::integer_sequence<T, elements...>>
 {
     static std::ostream& Write(std::ostream& output)
     {
         output << "std::integer_sequence<";
-        Serialize<T>::Write(output) << ",";
-        return JoinValue<',', T, x, xs...>::Write(output) << ">";
+        Join<',', T, SerializableValue<T, elements>...>::Write(output);
+        return output << ">";
     }
-    
 };
+
 template <typename T>
 struct Serialize<std::integer_sequence<T>>
 {
