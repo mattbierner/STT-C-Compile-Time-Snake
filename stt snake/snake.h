@@ -264,11 +264,12 @@ struct Serialize<State<playerState, position, direction, world, random>>
     static std::ostream& Write(std::ostream& output)
     {
         output << "State<";
-        Serialize<SerializableValue<PlayerState, playerState>>::Write(output) << ",";
-        Serialize<position>::Write(output) << ",";
-        Serialize<SerializableValue<Direction, direction>>::Write(output) << ",";
-        Serialize<world>::Write(output) << ",";
-        Serialize<random>::Write(output) << ">";
-        return output;
+        Join<',',
+            SerializableValue<PlayerState, playerState>,
+            position,
+            SerializableValue<Direction, direction>,
+            world,
+            random>::Write(output);
+        return output << ">";
     }
 };

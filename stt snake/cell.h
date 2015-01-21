@@ -132,9 +132,10 @@ struct Serialize<Cell<state, weight, direction>>
     static std::ostream& Write(std::ostream& output)
     {
         output << "Cell<";
-        Serialize<SerializableValue<CellState, state>>::Write(output) << ",";
-        output << weight << ",";
-        Serialize<SerializableValue<Direction, direction>>::Write(output);
+        Join<',',
+            SerializableValue<CellState, state>,
+            SerializableValue<unsigned, weight>,
+            SerializableValue<Direction, direction>>::Write(output);
         return output << ">";
     }
 };

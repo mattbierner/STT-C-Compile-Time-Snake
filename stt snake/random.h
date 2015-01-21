@@ -171,8 +171,8 @@ struct Serialize<prandom::Lfsr<state, taps>>
     static std::ostream& Write(std::ostream& output)
     {
         output << "prandom::Lfsr<";
-        Serialize<state>::Write(output) << ",";
-        Serialize<taps>::Write(output);
+        Join<',',
+            state, taps>::Write(output);
         return output << ">";
     }
 };
@@ -182,8 +182,10 @@ struct Serialize<prandom::PseudoRandomGenerator<max, lfsr>>
 {
     static std::ostream& Write(std::ostream& output)
     {
-        output << "prandom::PseudoRandomGenerator<" << max << ",";
-        Serialize<lfsr>::Write(output);
+        output << "prandom::PseudoRandomGenerator<";
+        Join<',',
+            SerializableValue<unsigned, max>,
+            lfsr>::Write(output);
         return output << ">";
     }
 };
