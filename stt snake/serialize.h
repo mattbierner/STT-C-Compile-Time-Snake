@@ -70,13 +70,7 @@ struct SerializableValue { };
 template <typename T, T x>
 struct Serialize<SerializableValue<T, x>>
 {
-    static std::ostream& Write(std::ostream& output) { return output << x; }
-};
-
-template <bool x>
-struct Serialize<SerializableValue<bool, x>>
-{
-    static std::ostream& Write(std::ostream& output) { return output << (x ? "true" : "false"); }
+    static std::ostream& Write(std::ostream& output) { return output << std::boolalpha << x; }
 };
 
 /**
@@ -93,12 +87,3 @@ struct Serialize<std::integer_sequence<T, elements...>>
     }
 };
 
-template <typename T>
-struct Serialize<std::integer_sequence<T>>
-{
-    static std::ostream& Write(std::ostream& output)
-    {
-        output << "std::integer_sequence<";
-        return Serialize<T>::Write(output) << ">";
-    }
-};
