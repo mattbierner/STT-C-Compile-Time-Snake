@@ -99,9 +99,6 @@ struct Serialize<Grid<rows>>
     }
 };
 
-/*------------------------------------------------------------------------------
-    Serialize
-*/
 template <size_t x, size_t y>
 struct Serialize<Position<x, y>>
 {
