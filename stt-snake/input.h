@@ -1,5 +1,7 @@
 #pragma once
 
+#include <utility>
+
 /**
     Single player input command.
 */
