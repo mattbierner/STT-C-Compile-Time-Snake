@@ -37,7 +37,7 @@ template <
     typename currentRandom>
 struct State
 {
-    static const PlayerState PlayerState = currentPlayerState;
+    static const PlayerState playerState = currentPlayerState;
 
     using position = currentPosition;
     
@@ -48,10 +48,10 @@ struct State
     using random = currentRandom;
     
     template <typename newWorld>
-    using set_world = State<PlayerState, position, direction, newWorld, random>;
+    using set_world = State<playerState, position, direction, newWorld, random>;
     
     template <typename newRandom>
-    using set_random = State<PlayerState, position, direction, world, newRandom>;
+    using set_random = State<playerState, position, direction, world, newRandom>;
 };
 
 /**
@@ -220,16 +220,16 @@ using step_t = typename step<input, state>::type;
     Printer
 */
 template <
-    PlayerState PlayerState,
+    PlayerState playerState,
     typename position,
     Direction direction,
     typename world,
     typename random>
-struct Printer<State<PlayerState, position, direction, world, random>>
+struct Printer<State<playerState, position, direction, world, random>>
 {
     static void Print(std::ostream& output)
     {
-        output << "--" << (PlayerState == PlayerState:: Dead ? " You Are Dead " : "--------------") << "--" << "\n";
+        output << "--" << (playerState == PlayerState:: Dead ? " You Are Dead " : "--------------") << "--" << "\n";
         Printer<world>::Print(output);
     }
 };
